@@ -33,7 +33,7 @@ void setup() {
   Serial.begin(9600);
   for (int i = 2; i < 14; i++){
     pinMode(i,OUTPUT);
-  	digitalWrite(i,LOW);
+    digitalWrite(i,LOW);
   }
   pinMode(2, INPUT);
   EIMSK |= (1 << INT0);
@@ -46,8 +46,8 @@ ISR(INT0_vect)
   countHits = 0;
   for (int i = 0; i < 6; i++) {
     for (int j = 0; j < 6; j++) {
-    	BattleshipPositions[i][j] = 0;
-      	LedMatrix[i][j] = 1;
+      BattleshipPositions[i][j] = 0;
+        LedMatrix[i][j] = 1;
     }
   }
 }
@@ -55,30 +55,32 @@ ISR(INT0_vect)
 void receiveEvent(int bytes) {
   int x = Wire.read();
   if (x == '0' + 1) {
-  	 p1Turn = true;
+     p1Turn = true;
      turn = '1';
    }
   if ((p1Turn == true) && (x <= 35)) {
-  	int row = x / 6;
+    int row = x / 6;
     int col = x % 6;
     if (BattleshipPositions[row][col] == 1) {
-      LedMatrix[row][col] = 0;  
-      countHits++;
+      if (LedMatrix[row][col] == 1) {
+        LedMatrix[row][col] = 0;  
+        countHits++;
+      }
       if (countHits > 5) {
-      	tone(A0, 2400, 125);
+        tone(A0, 2400, 125);
         tone(A0, 2400, 125);
         tone(A0, 2400, 125);
         tone(A0, 2400, 125);
         tone(A0, 2400, 125);
       }else {
-      	tone(A0, 1500, 125);
+        tone(A0, 1500, 125);
       }
     }else {
       tone(A0, 73, 125);
     }
     turn = '2';
     p1Turn = false;
-    Serial.println(x);	
+    Serial.println(x);  
   }
   
 }
